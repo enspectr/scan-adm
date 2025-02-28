@@ -11,14 +11,25 @@
 <body>
   <table>
   <tr>
-  <td><label for="tx-msg">Tx:</label></td>
-  <td><span><input type="text" id="tx-msg" name="tx-msg" size="32" disabled="true"/></span></td>
-  <td><button type="button" id="bt-btn"></button></td>
+    <td colspan="2">
+    <select id="select-cmd" disabled="true">
+      <option value="" id="opt-select-cmd-empty"></option>
+    </select>
+    <select id="select-log" disabled="true">
+      <option value="" id="opt-select-log-empty"></option>
+    </select>
+    <button type="button" id="bt-btn"></button>
+	</td>
   </tr>
   <tr>
-  <td><label for="rx-msg">Rx:</label></td>
-  <td><textarea id="rx-msg" name="rx-msg" rows="32" cols="32" disabled="true" readonly></textarea></td>
-  <td><button type="button" class="hidden" id="bt-btn2"></button></td>
+    <td><input type="text" id="cmd-arg1" disabled="true"/></td>
+    <td><input type="text" id="cmd-arg2" disabled="true"/></td>
+  </tr>
+  <tr>
+    <td colspan="2"><input type="text" id="cmd-arg3" disabled="true"/></td>
+  </tr>
+  <tr>
+    <td colspan="2"><textarea id="txt-res" rows="32" cols="64" disabled="true" readonly></textarea></td>
   </tr>
   </table>
   <script src="js/ble_mx_api.js"></script>

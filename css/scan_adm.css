@@ -28,3 +28,7 @@ textarea {
 	display: none;
 	visibility:hidden;
 }
+
+#bt-btn {
+	float: right;
+}
