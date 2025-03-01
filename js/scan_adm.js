@@ -109,13 +109,21 @@ function onBTConnected(device)
 	else if (!log_list)
 		send_cmd('_ls_log');
 	else
-		enable_cmd_selector();
+		init_cmd_selector();
 }
 
 function doSendCmd()
 {
 	txt_res.textContent = '';
 	// TBD
+}
+
+function disable_args()
+{
+	for (let i = 0; i < ncmd_args; ++i) {
+		cmd_arg[i].placeholder = '';
+		cmd_arg[i].disabled = true;
+	}
 }
 
 function onDisconnection(device)
@@ -147,11 +155,8 @@ function on_cmd_selected()
 {
 	if (!sel_cmd.selectedIndex) {
 		disable_log_selector();
+		disable_args();
 		bt_btn.disabled = true;
-		for (let i = 0; i < ncmd_args; ++i) {
-			cmd_arg[i].placeholder = '';
-			cmd_arg[i].disabled = true;
-		}
 		return;
 	}
 	const cmd = sel_cmd.value;
@@ -181,10 +186,11 @@ function on_log_selected()
 	bt_btn.disabled = !cmd_ok;
 }
 
-function enable_cmd_selector()
+function init_cmd_selector()
 {
 	sel_cmd.disabled = false;
 	sel_cmd.selectedIndex = 0;
+	disable_args();
 	disable_log_selector();
 }
 
@@ -248,7 +254,7 @@ function handle_log_list(o)
 	}
 	if (!log_list) {
 		setup_logs(o['out'].split('\n'));
-		enable_cmd_selector();
+		init_cmd_selector();
 	}
 }
 
