@@ -72,11 +72,11 @@ const commands = {
 		]
 	},
 	'eth_addr' : {
-		'name' : 'Set static / dynamic Ethernet address',
+		'name' : 'Set static / dynamic Ethernet IP',
 		'args': [
-			'static IP address/mask bits / leave empty for dynamic IP',
-			'static router address / leave empty for dynamic IP',
-			'DNS addresses (space sep.) / leave empty for dynamic IP'
+			'static IP/mask / empty for dynamic IP',
+			'router IP / empty for dynamic IP',
+			'DNS addresses / empty for dynamic IP'
 		]
 	},
 	'ifconfig' : {
