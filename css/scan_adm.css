@@ -29,6 +29,6 @@ textarea {
 	visibility:hidden;
 }
 
-#bt-btn {
+#bt-btn, #select-log {
 	float: right;
 }
