@@ -97,6 +97,8 @@ function initPage()
 	bt_btn.textContent = 'Connect';
 	bt_btn.onclick = onBtn;
 	bt_conn = new Connection(rx_cb, true);
+	sel_cmd.addEventListener('change', on_cmd_selected);
+	sel_log.addEventListener('change', on_log_selected);
 }
 
 function onBTConnected(device)
@@ -127,12 +129,63 @@ function onDisconnection(device)
 	connectTo(device);
 }
 
+function enable_log_selector()
+{
+	log_empty.textContent = empty_log_text;
+	sel_log.selectedIndex = 0;
+	sel_log.disabled = false;
+}
+
+function disable_log_selector()
+{
+	log_empty.textContent = '';
+	sel_log.selectedIndex = 0;
+	sel_log.disabled = true;
+}
+
+function on_cmd_selected()
+{
+	if (!sel_cmd.selectedIndex) {
+		disable_log_selector();
+		bt_btn.disabled = true;
+		for (let i = 0; i < ncmd_args; ++i) {
+			cmd_arg[i].placeholder = '';
+			cmd_arg[i].disabled = true;
+		}
+		return;
+	}
+	const cmd = sel_cmd.value;
+	if (cmd == 'log_tail') {
+		enable_log_selector();
+		bt_btn.disabled = true;
+	} else {
+		disable_log_selector();
+		bt_btn.disabled = false;		
+	}
+	const descr = commands[cmd];
+	const nargs = 'args' in descr ? descr['args'].length : 0;
+	console.assert(nargs <= ncmd_args);
+	for (let i = 0; i < nargs; ++i) {
+		cmd_arg[i].placeholder = descr['args'][i];
+		cmd_arg[i].disabled = false;
+	}
+	for (let i = nargs; i < ncmd_args; ++i) {
+		cmd_arg[i].placeholder = '';
+		cmd_arg[i].disabled = true;
+	}
+}
+
+function on_log_selected()
+{
+	const cmd_ok = sel_cmd.selectedIndex != 0 && (sel_cmd.value != 'log_tail' || sel_log.selectedIndex != 0);
+	bt_btn.disabled = !cmd_ok;
+}
+
 function enable_cmd_selector()
 {
 	sel_cmd.disabled = false;
 	sel_cmd.selectedIndex = 0;
-	log_empty.textContent = '';
-	sel_log.selectedIndex = 0;
+	disable_log_selector();
 }
 
 function setup_commands(arr)
