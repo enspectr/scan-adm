@@ -19,11 +19,73 @@ const cmd_arg = [
 	document.getElementById('cmd-arg3')
 ]
 const txt_res   = document.getElementById('txt-res');
+const sel_cmd   = document.getElementById('select-cmd');
+const sel_log   = document.getElementById('select-log');
 const cmd_empty = document.getElementById('opt-select-cmd-empty');
-const log_empty = document.getElementById('opt-select-cmd-empty');
+const log_empty = document.getElementById('opt-select-log-empty');
+
+const empty_cmd_text = '--command--';
+const empty_log_text = '--log file--';
+
 const ncmd_args = cmd_arg.length;
 
 let bt_conn = null;
+
+const commands = {
+	'uptime' : {
+		'name' : 'Running time'
+	},
+	'reboot' : {
+		'name' : 'Reboot'
+	},
+	'shutdown' : {
+		'name' : 'Shutdown'
+	},
+	'release' : {
+		'name' : 'Code release'
+	},
+	'mk_pins' : {
+		'name' : 'Create PINs',
+		'args': ['passphrase']
+	},
+	'rm_pins' : {
+		'name' : 'Remove PINs'
+	},
+	'log_tail' : {
+		'name' : 'Show log',
+		// The first argument is the log filename.
+		// It should be selected from the drop down list.
+		'args': ['number of lines']
+	},
+	'copy_logs' : {
+		'name' : 'Copy logs'
+	},
+	'top' : {
+		'name' : 'Top processes',
+		'args': ['the number of process', 'more top options']
+	},
+	'wifi' : {
+		'name' : 'Connect / forget WiFi',
+		'args': [
+			'network name / leave empty to forget',
+			'network password / leave empty to forget'
+		]
+	},
+	'eth_addr' : {
+		'name' : 'Set static / dynamic Ethernet address',
+		'args': [
+			'static IP address/mask bits / leave empty for dynamic IP',
+			'static router address / leave empty for dynamic IP',
+			'DNS addresses (space sep.) / leave empty for dynamic IP'
+		]
+	},
+	'ifconfig' : {
+		'name' : 'Network configuration'
+	}
+};
+
+let cmd_list;
+let log_list;
 
 function initPage()
 {
@@ -31,27 +93,153 @@ function initPage()
 		document.body.innerHTML = '<div class="alert-page">The Bluetooth is not supported in this browser. Please try another one.</div>';
 		return;
 	}
-	cmd_empty.textContent = '--command--';
+	cmd_empty.textContent = empty_cmd_text;
 	bt_btn.textContent = 'Connect';
 	bt_btn.onclick = onBtn;
 	bt_conn = new Connection(rx_cb, true);
 }
 
+function onBTConnected(device)
+{
+	bt_btn.textContent = 'Send';
+	if (!cmd_list)
+		send_cmd('_ls_cmd');
+	else if (!log_list)
+		send_cmd('_ls_log');
+	else
+		enable_cmd_selector();
+}
+
+function doSendCmd()
+{
+	txt_res.textContent = '';
+	// TBD
+}
+
 function onDisconnection(device)
 {
 	bt_btn.disabled = true;
+	sel_cmd.disabled = true;
+	sel_log.disabled = true;
 	for (let i = 0; i < ncmd_args; ++i)
 		cmd_arg[i].disabled = true;
 	txt_res.disabled = true;
 	connectTo(device);
 }
 
-function send_cmd()
+function enable_cmd_selector()
+{
+	sel_cmd.disabled = false;
+	sel_cmd.selectedIndex = 0;
+	log_empty.textContent = '';
+	sel_log.selectedIndex = 0;
+}
+
+function setup_commands(arr)
+{
+	console.log('commands:', arr);
+	for (const cmd in commands) {
+		if (!arr.includes(cmd)) {
+			console.log('unsupported command:', cmd);
+			delete commands[cmd];
+		}
+	}
+	for (const cmd of arr) {
+		if (!cmd || cmd[0] == '_')
+			continue;
+		if (!(cmd in commands)) {
+			console.log('unknown command added:', cmd);
+			commands[cmd] = {'name' : cmd, 'args' : Array(ncmd_args).fill('')};
+		}
+	}
+	for (const cmd in commands) {
+		var opt = document.createElement('option');
+		opt.value = cmd;
+		opt.innerHTML = commands[cmd].name;
+		sel_cmd.appendChild(opt);		
+	}
+	cmd_list = arr;
+}
+
+function setup_logs(arr)
+{
+	console.log('logs:', arr);
+	for (const f of arr) {
+		if (f) {
+			var opt = document.createElement('option');
+			opt.value = f;
+			opt.innerHTML = f;
+			sel_log.appendChild(opt);
+		}
+	}
+	log_list = arr;
+}
+
+function handle_cmd_list(o)
+{
+	if (o['ret'] !== 0) {
+		console.warn('unexpected _ls_cmd return code');
+		return;
+	}
+	if (!cmd_list)
+		setup_commands(o['out'].split('\n'));
+	if (!log_list)
+		send_cmd('_ls_log');
+}
+
+function handle_log_list(o)
+{
+	if (o['ret'] !== 0) {
+		console.warn('unexpected _ls_log return code');
+		return;
+	}
+	if (!log_list) {
+		setup_logs(o['out'].split('\n'));
+		enable_cmd_selector();
+	}
+}
+
+function handle_cmd_resp(o)
 {
 }
 
-function on_rx(str)
+function send_cmd(cmd, args)
 {
+	let o = {'cmd' : cmd};
+	if (args)
+		o['args'] = args;
+	send_cmd_obj(o);
+}
+
+function send_cmd_obj(o)
+{
+	const str = JSON.stringify(o);
+	return txString('C' + str.slice(1, -1));
+}
+
+function handle_msg_str(str)
+{
+	if (str[0] != 'C') {
+		console.warn('unexpected message type');
+		return;
+	}
+	handle_msg_obj(JSON.parse('{' + str.slice(1) + '}'));
+}
+
+function handle_msg_obj(o)
+{
+	const cmd = o['cmd'];
+	switch (cmd) {
+	case '_ls_cmd':
+		handle_cmd_list(o);
+		break;
+	case '_ls_log':
+		handle_log_list(o);
+		break;
+	default:
+		handle_cmd_resp(o);
+		break;
+	}
 }
 
 function do_receive(data)
@@ -62,7 +250,7 @@ function do_receive(data)
 		console.error('bad csum:', str);
 		return;
 	}
-	on_rx(str.slice(0, -CSUM_LEN));
+	handle_msg_str(str.slice(0, -CSUM_LEN));
 }
 
 function rx_cb(data, is_binary=false)
@@ -73,15 +261,10 @@ function rx_cb(data, is_binary=false)
 		return;
 	}
 	decompress(new DataView(data.buffer, 0, len - 1)).then(d => {
-		console.log("unzip:", len - 1, '->', d.byteLength);
+		console.log('unzip:', len - 1, '->', d.byteLength);
 		do_receive(d);
 	})
 	.catch((err) => {console.error('failed to decompress', err);});
-}
-
-function onBTConnected(device)
-{
-	bt_btn.textContent = 'Send';
 }
 
 function connectTo(device)
@@ -121,7 +304,7 @@ function txString(str)
 function onBtn(event)
 {
 	if (bt_conn.is_connected())
-		send_cmd();
+		doSendCmd();
 	else
 		doConnect();
 }
