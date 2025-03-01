@@ -106,7 +106,7 @@ function initPage()
 function onBTConnected(device)
 {
 	status.textContent = 'connected';
-	bt_btn.textContent = 'Send';
+	bt_btn.textContent = 'Execute';
 	if (!cmd_list)
 		send_cmd('_ls_cmd');
 	else if (!log_list)
