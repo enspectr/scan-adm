@@ -32,3 +32,8 @@ textarea {
 #bt-btn, #select-log {
 	float: right;
 }
+
+#status {
+	font-style: italic;
+	color: darkgrey;
+}

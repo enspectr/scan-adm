@@ -12,6 +12,7 @@ const COMPRESS_TAG   = __ble_mx_api.COMPRESS_TAG;
 const compress       = __ble_mx_api.compress;
 const decompress     = __ble_mx_api.decompress;
 
+const status = document.getElementById('status');
 const bt_btn = document.getElementById('bt-btn');
 const cmd_arg = [
 	document.getElementById('cmd-arg1'),
@@ -93,6 +94,7 @@ function initPage()
 		document.body.innerHTML = '<div class="alert-page">The Bluetooth is not supported in this browser. Please try another one.</div>';
 		return;
 	}
+	status.textContent = 'not connected';
 	cmd_empty.textContent = empty_cmd_text;
 	bt_btn.textContent = 'Connect';
 	bt_btn.onclick = onBtn;
@@ -103,6 +105,7 @@ function initPage()
 
 function onBTConnected(device)
 {
+	status.textContent = 'connected';
 	bt_btn.textContent = 'Send';
 	if (!cmd_list)
 		send_cmd('_ls_cmd');
@@ -128,6 +131,7 @@ function disable_args()
 
 function onDisconnection(device)
 {
+	status.textContent = 'reconnecting ..';
 	bt_btn.disabled = true;
 	sel_cmd.disabled = true;
 	sel_log.disabled = true;
@@ -333,6 +337,7 @@ function connectTo(device)
 
 function doConnect(devname)
 {
+	status.textContent = 'connecting ..';
 	console.log('doConnect', devname);
 	bt_btn.disabled = true;
 	let filters = [{services: [Connection.bt_svc_id]}];
