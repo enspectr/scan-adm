@@ -72,7 +72,7 @@ const commands = {
 		]
 	},
 	'eth_addr' : {
-		'name' : 'Set static / dynamic Ethernet IP',
+		'name' : 'Set Ethernet IP address',
 		'args': [
 			'static IP/mask / empty for dynamic IP',
 			'router IP / empty for dynamic IP',

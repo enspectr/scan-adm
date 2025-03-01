@@ -10,29 +10,19 @@
   </head>
 <body>
   <table>
-  <tr>
-    <td colspan="2">
+  <tr><td><button type="button" id="bt-btn"></button></td></tr>
+  <tr><td>
     <select id="select-cmd" disabled="true">
       <option value="" id="opt-select-cmd-empty"></option>
     </select>
-    <button type="button" id="bt-btn"></button>
-	</td>
-  </tr>
-  <tr>
-    <td>
     <select id="select-log" disabled="true">
       <option value="" id="opt-select-log-empty"></option>
     </select>
-    <td><input type="text" id="cmd-arg1" disabled="true"/></td>
-	</td>
-  </tr>
-  <tr>
-    <td><input type="text" id="cmd-arg2" disabled="true"/></td>
-    <td><input type="text" id="cmd-arg3" disabled="true"/></td>
-  </tr>
-  <tr>
-    <td colspan="2"><textarea id="txt-res" rows="28" cols="64" disabled="true" readonly></textarea></td>
-  </tr>
+  </td></tr>
+  <tr><td><input type="text" id="cmd-arg1" disabled="true"/></td></tr>
+  <tr><td><input type="text" id="cmd-arg2" disabled="true"/></td></tr>
+  <tr><td><input type="text" id="cmd-arg3" disabled="true"/></td></tr>
+  <tr><td><textarea id="txt-res" rows="22" cols="64" disabled="true" readonly></textarea></td></tr>
   </table>
   <script src="js/ble_mx_api.js"></script>
   <script src="js/scan_adm.js"></script>
