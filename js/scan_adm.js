@@ -127,6 +127,12 @@ const tr =
 let cmd_list;
 let log_list;
 
+function on_arg_keypress(e)
+{
+	if (e.keyCode == 13)
+		bt_btn.click();
+}
+
 function initPage()
 {
 	if (!navigator.bluetooth) {
@@ -140,6 +146,8 @@ function initPage()
 	bt_conn = new Connection(rx_cb, true);
 	sel_cmd.addEventListener('change', on_cmd_selected);
 	sel_log.addEventListener('change', on_log_selected);
+	for (let i = 0; i < ncmd_args; ++i)
+		cmd_arg[i].addEventListener('keypress', on_arg_keypress);
 }
 
 function onBTConnected(device)
