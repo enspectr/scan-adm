@@ -188,10 +188,12 @@ function on_cmd_selected()
 	const nargs = descr && 'args' in descr ? descr['args'].length : 0;
 	for (let i = 0; i < nargs; ++i) {
 		cmd_arg[i].placeholder = descr['args'][i];
+		cmd_arg[i].value = '';
 		cmd_arg[i].disabled = false;
 	}
 	for (let i = nargs; i < ncmd_args; ++i) {
 		cmd_arg[i].placeholder = '';
+		cmd_arg[i].value = '';
 		cmd_arg[i].disabled = true;
 	}
 	if (cmd == 'log_tail') {
