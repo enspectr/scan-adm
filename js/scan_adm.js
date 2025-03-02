@@ -2,6 +2,13 @@
 
 (() => {
 
+const lang = (() => {
+	var languageString = navigator.language || navigator.userLanguage || '';
+	return languageString.split(/[_-]/)[0].toLowerCase();
+})();
+
+const lang_ru = (lang == 'ru');
+
 const Connection = __ble_mx_api.ConnectionExt;
 
 const str2Uint8Array = __ble_mx_api.str2Uint8Array;
@@ -25,66 +32,93 @@ const sel_log   = document.getElementById('select-log');
 const cmd_empty = document.getElementById('opt-select-cmd-empty');
 const log_empty = document.getElementById('opt-select-log-empty');
 
-const empty_cmd_text = '--command--';
-const empty_log_text = '--log file--';
-
 const ncmd_args = cmd_arg.length;
 
 let bt_conn = null;
 
 const commands = {
 	'uptime' : {
-		'name' : 'Running time'
+		name : !lang_ru ? 'Running time' : 'Время работы'
 	},
 	'reboot' : {
-		'name' : 'Reboot'
+		name : !lang_ru ? 'Reboot' : 'Перезагрузить',
 	},
 	'shutdown' : {
-		'name' : 'Shutdown'
+		name : !lang_ru ? 'Shutdown' : 'Выключить'
 	},
 	'release' : {
-		'name' : 'Code release'
+		name : !lang_ru ? 'Code release' : 'Информация о релизе'
 	},
 	'mk_pins' : {
-		'name' : 'Create PINs',
-		'args': ['passphrase']
+		name : !lang_ru ? 'Create PINs' : 'Создать ПИН-коды',
+		args : !lang_ru ? ['passphrase'] : ['кодовая фраза']
 	},
 	'rm_pins' : {
-		'name' : 'Remove PINs'
+		name : !lang_ru ? 'Remove PINs' : 'Удалить ПИН-коды'
 	},
 	'log_tail' : {
-		'name' : 'Show log',
+		name : !lang_ru ? 'Show log' : 'Показать лог',
 		// The first argument is the log filename.
 		// It should be selected from the drop down list.
-		'args': ['number of lines']
+		args : !lang_ru ? ['number of lines'] : ['количество строк']
 	},
 	'copy_logs' : {
-		'name' : 'Copy logs'
+		name : !lang_ru ? 'Copy logs' : 'Скопировать логи'
 	},
 	'top' : {
-		'name' : 'Top processes',
-		'args': ['the number of process', 'more top options']
+		name : !lang_ru ? 'Top processes' : 'Детализация загрузки',
+		args : !lang_ru ? ['the number of process', 'more top options'] : ['количество процессов', 'доп. опции']
 	},
 	'wifi' : {
-		'name' : 'Connect / forget WiFi',
-		'args': [
-			'network name / leave empty to forget',
-			'network password / leave empty to forget'
+		name : !lang_ru ? 'Connect / forget WiFi' : 'Подключить / забыть WiFi',
+		args : !lang_ru ? [
+			'network name | leave empty to forget',
+			'network password | leave empty to forget'
+		]  : [
+			'имя сети | оставить пустым, чтобы забыть',
+			'пароль сети | оставить пустым, чтобы забыть'
 		]
 	},
 	'eth_addr' : {
-		'name' : 'Set Ethernet IP address',
-		'args': [
-			'static IP/mask / empty for dynamic IP',
-			'router IP / empty for dynamic IP',
-			'DNS addresses / empty for dynamic IP'
+		name : !lang_ru ? 'Set Ethernet IP address' : 'Настроить Ethernet',
+		args : !lang_ru ? [
+			'static IP/mask | empty for dynamic IP',
+			'gateway IP | empty for dynamic IP',
+			'DNS addresses | empty for dynamic IP'
+		] : [
+			'статический IP/маска | оставить пустым для DHCP' ,
+			'IP адрес шлюза | оставить пустым для DHCP',
+			'IP адреса DNS | оставить пустым для DHCP'
 		]
 	},
 	'ifconfig' : {
-		'name' : 'Network configuration'
+		name : !lang_ru ? 'Network configuration' : 'Конфигурация сети'
 	}
 };
 
+// Text translations
+const tr =
+!lang_ru ? {
+	connect       : 'Connect',
+	execute       : 'Execute',
+	not_connected : 'not connected',
+	connected     : 'connected',
+	reconnecting  : 'reconnecting ..',
+	connecting    : 'connecting ..',
+	empty_cmd     : '--command--',
+	empty_log     : '--log file--',
+} : {
+	connect       : 'Подключиться',
+	execute       : 'Выполнить',
+	not_connected : 'не подключено',
+	connected     : 'подключено',
+	reconnecting  : 'переподключение ..',
+	connecting    : 'подключение ..',
+	empty_cmd     : '--команда--',
+	empty_log     : '--файл лога--',
+};
+
+// The list of commands / logs received from scanner
 let cmd_list;
 let log_list;
 
@@ -94,9 +128,9 @@ function initPage()
 		document.body.innerHTML = '<div class="alert-page">The Bluetooth is not supported in this browser. Please try another one.</div>';
 		return;
 	}
-	status.textContent = 'not connected';
-	cmd_empty.textContent = empty_cmd_text;
-	bt_btn.textContent = 'Connect';
+	status.textContent = tr.not_connected;
+	cmd_empty.textContent = tr.empty_cmd;
+	bt_btn.textContent = tr.connect;
 	bt_btn.onclick = onBtn;
 	bt_conn = new Connection(rx_cb, true);
 	sel_cmd.addEventListener('change', on_cmd_selected);
@@ -105,10 +139,10 @@ function initPage()
 
 function onBTConnected(device)
 {
-	status.textContent = 'connected';
+	status.textContent = tr.connected;
 	status.classList.remove('failed');
 	status.classList.add('connected');
-	bt_btn.textContent = 'Execute';
+	bt_btn.textContent = tr.execute;
 	if (!cmd_list)
 		send_cmd('_ls_cmd');
 	else if (!log_list)
@@ -152,7 +186,7 @@ function doSendCmd()
 
 function onDisconnection(device)
 {
-	status.textContent = 'reconnecting ..';
+	status.textContent = tr.reconnecting;
 	status.classList.add('failed');
 	status.classList.remove('connected');
 	bt_btn.disabled = true;
@@ -197,7 +231,7 @@ function on_cmd_selected()
 		cmd_arg[i].disabled = true;
 	}
 	if (cmd == 'log_tail') {
-		log_empty.textContent = empty_log_text;
+		log_empty.textContent = tr.empty_log;
 		sel_log.disabled = false;
 	} else {
 		log_empty.textContent = '';
@@ -363,7 +397,7 @@ function connectTo(device)
 
 function doConnect(devname)
 {
-	status.textContent = 'connecting ..';
+	status.textContent = tr.connecting;
 	console.log('doConnect', devname);
 	bt_btn.disabled = true;
 	let filters = [{services: [Connection.bt_svc_id]}];
@@ -379,7 +413,7 @@ function doConnect(devname)
 	})
 	.catch((err) => {
 		console.error('Failed to discover BT devices');
-		bt_btn.textContent = 'Connect';
+		bt_btn.textContent = tr.connect;
 		bt_btn.disabled = false;
 	});
 }
