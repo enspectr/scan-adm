@@ -189,7 +189,7 @@ function doSendCmd()
 	txt_res.disabled = true;
 }
 
-function onDisconnection(device)
+function onBTDisconnected(device)
 {
 	status.textContent = tr.reconnecting;
 	status.classList.add('failed');
@@ -380,7 +380,7 @@ function rx_cb(data, is_binary=false)
 
 function connectTo(device)
 {
-	bt_conn.connect(device, onBTConnected, onDisconnection);
+	bt_conn.connect(device, onBTConnected, onBTDisconnected);
 }
 
 function doConnect(devname)
