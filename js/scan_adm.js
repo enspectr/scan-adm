@@ -119,8 +119,35 @@ function onBTConnected(device)
 
 function doSendCmd()
 {
+	const cmd = sel_cmd.value;
+	if (!cmd) {
+		console.error('command not selected');
+		return;
+	}
+	const descr = commands[cmd];
+	if ('args' in descr)
+	{
+		let args = [];
+		const nargs = descr['args'].length;
+		if (cmd == 'log_tail') {
+			if (!sel_log.selectedIndex) {
+				console.error('log file not selected');
+				return;
+			}
+			args.push(sel_log.value);
+		}
+		for (let i = 0; i < nargs; ++i) {
+			const arg = cmd_arg[i].value;
+			if (!arg)
+				break;
+			args.push(arg);
+		}
+		send_cmd(cmd, args);
+	} else
+		send_cmd(cmd);
+
 	txt_res.textContent = '';
-	// TBD
+	txt_res.disabled = true;
 }
 
 function onDisconnection(device)
@@ -144,25 +171,21 @@ function cmd_ok()
 
 function init_cmd_selector()
 {
+	const cmd = sel_cmd.value;
+	const descr = commands[cmd];
+	const nargs = descr && 'args' in descr ? descr['args'].length : 0;
+	for (let i = 0; i < nargs; ++i)
+		cmd_arg[i].disabled = false;
 	sel_cmd.disabled = false;
-	sel_log.disabled = (sel_cmd.value != 'log_tail');
+	sel_log.disabled = (cmd != 'log_tail');
 	bt_btn.disabled = !cmd_ok();
 }
 
 function on_cmd_selected()
 {
 	const cmd = sel_cmd.value;
-	if (cmd == 'log_tail') {
-		log_empty.textContent = empty_log_text;
-		sel_log.disabled = false;
-	} else {
-		log_empty.textContent = '';
-		sel_log.disabled = true;
-	}
-	sel_log.selectedIndex = 0;
 	const descr = commands[cmd];
-	const nargs = 'args' in descr ? descr['args'].length : 0;
-	console.assert(nargs <= ncmd_args);
+	const nargs = descr && 'args' in descr ? descr['args'].length : 0;
 	for (let i = 0; i < nargs; ++i) {
 		cmd_arg[i].placeholder = descr['args'][i];
 		cmd_arg[i].disabled = false;
@@ -171,6 +194,14 @@ function on_cmd_selected()
 		cmd_arg[i].placeholder = '';
 		cmd_arg[i].disabled = true;
 	}
+	if (cmd == 'log_tail') {
+		log_empty.textContent = empty_log_text;
+		sel_log.disabled = false;
+	} else {
+		log_empty.textContent = '';
+		sel_log.disabled = true;
+	}
+	sel_log.selectedIndex = 0;
 	bt_btn.disabled = !cmd_ok();
 }
 
@@ -246,6 +277,17 @@ function handle_log_list(o)
 
 function handle_cmd_resp(o)
 {
+	let str = '';
+	if (o['out'])
+		str += o['out'];
+	if (o['err'])
+		str += o['err'];
+	txt_res.textContent = str;
+	if (o['ret'])
+		txt_res.classList.add('failed');
+	else
+		txt_res.classList.remove('failed');
+	txt_res.disabled = false;
 }
 
 function send_cmd(cmd, args)
@@ -343,7 +385,7 @@ function doConnect(devname)
 function txString(str)
 {
 	str += str_csum(str);
-	console.debug('tx:', str);
+	console.log('tx:', str);
 	bt_conn.write(str2Uint8Array(str));
 }
 

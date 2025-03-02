@@ -45,3 +45,7 @@ textarea {
 #status.connected {
 	color: darkgreen;
 }
+
+#txt-res.failed {
+	color: darkred;
+}
