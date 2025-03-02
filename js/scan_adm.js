@@ -413,6 +413,7 @@ function doConnect(devname)
 	})
 	.catch((err) => {
 		console.error('Failed to discover BT devices');
+		status.textContent = tr.not_connected;
 		bt_btn.textContent = tr.connect;
 		bt_btn.disabled = false;
 	});
