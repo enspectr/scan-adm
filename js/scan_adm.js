@@ -331,8 +331,10 @@ function send_cmd(cmd, args)
 	let o = {'cmd' : cmd};
 	if (args)
 		o['args'] = args;
-	const str = JSON.stringify(o);
-	return txString('C' + str.slice(1, -1));
+	let str = 'C' + JSON.stringify(o).slice(1, -1);
+	str += str_csum(str);
+	console.log('tx:', str);
+	bt_conn.write(str2Uint8Array(str));
 }
 
 function do_receive(data)
@@ -403,13 +405,6 @@ function doConnect(devname)
 		bt_btn.textContent = tr.connect;
 		bt_btn.disabled = false;
 	});
-}
-
-function txString(str)
-{
-	str += str_csum(str);
-	console.log('tx:', str);
-	bt_conn.write(str2Uint8Array(str));
 }
 
 function onBtn(event)
