@@ -51,7 +51,7 @@ const commands = {
 	},
 	'mk_pins' : {
 		name : !lang_ru ? 'Create PINs' : 'Создать ПИН-коды',
-		args : !lang_ru ? ['passphrase'] : ['кодовая фраза']
+		args : !lang_ru ? ['[passphrase]'] : ['[кодовая фраза]']
 	},
 	'rm_pins' : {
 		name : !lang_ru ? 'Remove PINs' : 'Удалить ПИН-коды'
@@ -60,14 +60,14 @@ const commands = {
 		name : !lang_ru ? 'Show log' : 'Показать лог',
 		// The first argument is the log filename.
 		// It should be selected from the drop down list.
-		args : !lang_ru ? ['number of lines'] : ['количество строк']
+		args : !lang_ru ? ['[number of lines]'] : ['[количество строк]']
 	},
 	'copy_logs' : {
 		name : !lang_ru ? 'Copy logs' : 'Скопировать логи'
 	},
 	'top' : {
 		name : !lang_ru ? 'Top processes' : 'Детализация загрузки',
-		args : !lang_ru ? ['the number of process', 'more top options'] : ['количество процессов', 'доп. опции']
+		args : !lang_ru ? ['[the number of process]', '[more top options]'] : ['[количество процессов]', '[доп. опции]']
 	},
 	'wifi' : {
 		name : !lang_ru ? 'Connect / forget WiFi' : 'Подключить / забыть WiFi',
