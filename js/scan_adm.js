@@ -93,7 +93,13 @@ const commands = {
 	},
 	'ifconfig' : {
 		name : !lang_ru ? 'Network configuration' : 'Конфигурация сети'
-	}
+	},
+	'ssh_dis' : {
+		name : !lang_ru ? 'Disable ssh' : 'Запретить доступ по ssh'
+	},
+	'ssh_en' : {
+		name : !lang_ru ? 'Enable ssh' : 'Разрешить доступ по ssh'
+	},
 };
 
 // Text translations
@@ -314,10 +320,10 @@ function handle_log_list(o)
 function handle_cmd_resp(o)
 {
 	let str = '';
-	if (o['out'])
-		str += o['out'];
 	if (o['err'])
 		str += o['err'];
+	if (o['out'])
+		str += o['out'];
 	txt_res.textContent = str;
 	if (o['ret'])
 		txt_res.classList.add('failed');
