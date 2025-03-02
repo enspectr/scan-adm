@@ -212,8 +212,7 @@ function doSendCmd()
 			if (arg)
 				valid_args = args.length;
 		}
-		args = args.slice(0, valid_args);
-		send_cmd(cmd, args);
+		send_cmd(cmd, args.slice(0, valid_args));
 	} else
 		send_cmd(cmd);
 
