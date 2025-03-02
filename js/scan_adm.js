@@ -319,12 +319,7 @@ function handle_log_list(o)
 
 function handle_cmd_resp(o)
 {
-	let str = '';
-	if (o['err'])
-		str += o['err'];
-	if (o['out'])
-		str += o['out'];
-	txt_res.textContent = str;
+	txt_res.textContent = o['out'];
 	if (o['ret'])
 		txt_res.classList.add('failed');
 	else
