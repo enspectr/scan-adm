@@ -37,3 +37,11 @@ textarea {
 	font-style: italic;
 	color: darkgrey;
 }
+
+#status.failed {
+	color: darkred;
+}
+
+#status.connected {
+	color: darkgreen;
+}

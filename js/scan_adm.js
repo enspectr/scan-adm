@@ -106,6 +106,8 @@ function initPage()
 function onBTConnected(device)
 {
 	status.textContent = 'connected';
+	status.classList.remove('failed');
+	status.classList.add('connected');
 	bt_btn.textContent = 'Execute';
 	if (!cmd_list)
 		send_cmd('_ls_cmd');
@@ -121,17 +123,11 @@ function doSendCmd()
 	// TBD
 }
 
-function disable_args()
-{
-	for (let i = 0; i < ncmd_args; ++i) {
-		cmd_arg[i].placeholder = '';
-		cmd_arg[i].disabled = true;
-	}
-}
-
 function onDisconnection(device)
 {
 	status.textContent = 'reconnecting ..';
+	status.classList.add('failed');
+	status.classList.remove('connected');
 	bt_btn.disabled = true;
 	sel_cmd.disabled = true;
 	sel_log.disabled = true;
@@ -141,36 +137,29 @@ function onDisconnection(device)
 	connectTo(device);
 }
 
-function enable_log_selector()
+function cmd_ok()
 {
-	log_empty.textContent = empty_log_text;
-	sel_log.selectedIndex = 0;
-	sel_log.disabled = false;
+	return sel_cmd.selectedIndex != 0 && (sel_cmd.value != 'log_tail' || sel_log.selectedIndex != 0);
 }
 
-function disable_log_selector()
+function init_cmd_selector()
 {
-	log_empty.textContent = '';
-	sel_log.selectedIndex = 0;
-	sel_log.disabled = true;
+	sel_cmd.disabled = false;
+	sel_log.disabled = (sel_cmd.value != 'log_tail');
+	bt_btn.disabled = !cmd_ok();
 }
 
 function on_cmd_selected()
 {
-	if (!sel_cmd.selectedIndex) {
-		disable_log_selector();
-		disable_args();
-		bt_btn.disabled = true;
-		return;
-	}
 	const cmd = sel_cmd.value;
 	if (cmd == 'log_tail') {
-		enable_log_selector();
-		bt_btn.disabled = true;
+		log_empty.textContent = empty_log_text;
+		sel_log.disabled = false;
 	} else {
-		disable_log_selector();
-		bt_btn.disabled = false;		
+		log_empty.textContent = '';
+		sel_log.disabled = true;
 	}
+	sel_log.selectedIndex = 0;
 	const descr = commands[cmd];
 	const nargs = 'args' in descr ? descr['args'].length : 0;
 	console.assert(nargs <= ncmd_args);
@@ -182,20 +171,12 @@ function on_cmd_selected()
 		cmd_arg[i].placeholder = '';
 		cmd_arg[i].disabled = true;
 	}
+	bt_btn.disabled = !cmd_ok();
 }
 
 function on_log_selected()
 {
-	const cmd_ok = sel_cmd.selectedIndex != 0 && (sel_cmd.value != 'log_tail' || sel_log.selectedIndex != 0);
-	bt_btn.disabled = !cmd_ok;
-}
-
-function init_cmd_selector()
-{
-	sel_cmd.disabled = false;
-	sel_cmd.selectedIndex = 0;
-	disable_args();
-	disable_log_selector();
+	bt_btn.disabled = !cmd_ok();
 }
 
 function setup_commands(arr)
@@ -258,7 +239,8 @@ function handle_log_list(o)
 	}
 	if (!log_list) {
 		setup_logs(o['out'].split('\n'));
-		init_cmd_selector();
+		if (bt_conn.is_connected())
+			init_cmd_selector();
 	}
 }
 
