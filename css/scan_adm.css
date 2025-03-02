@@ -51,5 +51,9 @@ textarea {
 }
 
 ::-webkit-input-placeholder {
-   font-style: italic;
+	font-style: italic;
+}
+
+option:nth-child(1) {
+	font-style:italic;
 }
