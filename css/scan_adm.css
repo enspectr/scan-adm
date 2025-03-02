@@ -49,3 +49,7 @@ textarea {
 #txt-res.failed {
 	color: darkred;
 }
+
+::-webkit-input-placeholder {
+   font-style: italic;
+}
