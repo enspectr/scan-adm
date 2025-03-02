@@ -197,19 +197,22 @@ function doSendCmd()
 	{
 		let args = [];
 		const nargs = descr['args'].length;
+		let valid_args = 0;
 		if (cmd == 'log_tail') {
 			if (!sel_log.selectedIndex) {
 				console.error('log file not selected');
 				return;
 			}
 			args.push(sel_log.value);
+			valid_args = 1;
 		}
 		for (let i = 0; i < nargs; ++i) {
 			const arg = cmd_arg[i].value;
-			if (!arg)
-				break;
 			args.push(arg);
+			if (arg)
+				valid_args = args.length;
 		}
+		args = args.slice(0, valid_args);
 		send_cmd(cmd, args);
 	} else
 		send_cmd(cmd);
@@ -360,10 +363,10 @@ function handle_cmd_resp(o)
 	txt_res.disabled = false;
 }
 
-function send_cmd(cmd, args)
+function send_cmd(cmd, args=[])
 {
 	let o = {'cmd' : cmd};
-	if (args)
+	if (args.length)
 		o['args'] = args;
 	let str = 'C' + JSON.stringify(o).slice(1, -1);
 	str += str_csum(str);
