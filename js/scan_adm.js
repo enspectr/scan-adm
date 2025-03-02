@@ -104,23 +104,29 @@ const commands = {
 // Text translations
 const tr =
 !lang_ru ? {
-	connect       : 'Connect',
-	execute       : 'Execute',
-	not_connected : 'not connected',
-	connected     : 'connected',
-	reconnecting  : 'reconnecting ..',
-	connecting    : 'connecting ..',
-	empty_cmd     : '--command--',
-	empty_log     : '--log file--',
+	connect         : 'Connect',
+	execute         : 'Execute',
+	not_connected   : 'not connected',
+	connected       : 'connected',
+	reconnecting    : 'reconnecting ..',
+	connecting      : 'connecting ..',
+	empty_cmd       : '--command--',
+	empty_log       : '--log file--',
+	argument        : 'argument',
+	results         : 'results area, press Enter to copy',
+	waiting_results : 'waiting results',
 } : {
-	connect       : 'Подключиться',
-	execute       : 'Выполнить',
-	not_connected : 'не подключено',
-	connected     : 'подключено',
-	reconnecting  : 'переподключение ..',
-	connecting    : 'подключение ..',
-	empty_cmd     : '--команда--',
-	empty_log     : '--файл лога--',
+	connect         : 'Подключиться',
+	execute         : 'Выполнить',
+	not_connected   : 'не подключено',
+	connected       : 'подключено',
+	reconnecting    : 'переподключение ..',
+	connecting      : 'подключение ..',
+	empty_cmd       : '--команда--',
+	empty_log       : '--файл лога--',
+	argument        : 'параметр',
+	results         : 'область вывода результатов, нажите Enter, чтобы скопировать',
+	waiting_results : 'ожидаем результаты',
 };
 
 // The list of commands / logs received from scanner
@@ -131,6 +137,15 @@ function on_arg_keypress(e)
 {
 	if (e.keyCode == 13)
 		bt_btn.click();
+}
+
+function on_txt_res_keypress(e)
+{
+	navigator.clipboard.writeText(txt_res.textContent).then(function() {
+			console.log('result text copied to clipboard');
+		}, function(err) {
+			console.error('copy to clipboard failed:', err);
+		});
 }
 
 function initPage()
@@ -146,8 +161,14 @@ function initPage()
 	bt_conn = new Connection(rx_cb, true);
 	sel_cmd.addEventListener('change', on_cmd_selected);
 	sel_log.addEventListener('change', on_log_selected);
-	for (let i = 0; i < ncmd_args; ++i)
+	for (let i = 0; i < ncmd_args; ++i) {
 		cmd_arg[i].addEventListener('keypress', on_arg_keypress);
+		cmd_arg[i].placeholder = tr.argument + ' #' + (i+1);
+	}
+	if (navigator.clipboard) {
+		txt_res.addEventListener('keypress', on_txt_res_keypress);
+		txt_res.placeholder = tr.results;
+	}
 }
 
 function onBTConnected(device)
@@ -194,6 +215,7 @@ function doSendCmd()
 		send_cmd(cmd);
 
 	txt_res.textContent = '';
+	txt_res.placeholder = tr.waiting_results;
 	txt_res.disabled = true;
 }
 
@@ -208,6 +230,7 @@ function onBTDisconnected(device)
 	for (let i = 0; i < ncmd_args; ++i)
 		cmd_arg[i].disabled = true;
 	txt_res.disabled = true;
+	txt_res.placeholder = '';
 	connectTo(device);
 }
 
@@ -225,6 +248,8 @@ function init_cmd_selector()
 		cmd_arg[i].disabled = false;
 	sel_cmd.disabled = false;
 	sel_log.disabled = (cmd != 'log_tail');
+	if (txt_res.textContent)
+		txt_res.disabled = false;
 	bt_btn.disabled = !cmd_ok();
 }
 
@@ -327,6 +352,7 @@ function handle_log_list(o)
 function handle_cmd_resp(o)
 {
 	txt_res.textContent = o['out'];
+	txt_res.placeholder = '';
 	if (o['ret'])
 		txt_res.classList.add('failed');
 	else
