@@ -331,26 +331,23 @@ function send_cmd(cmd, args)
 	let o = {'cmd' : cmd};
 	if (args)
 		o['args'] = args;
-	send_cmd_obj(o);
-}
-
-function send_cmd_obj(o)
-{
 	const str = JSON.stringify(o);
 	return txString('C' + str.slice(1, -1));
 }
 
-function handle_msg_str(str)
+function do_receive(data)
 {
+	let str = DataView2str(data);
+	console.debug('rx:', str);
+	if (str.slice(-CSUM_LEN) != str_csum(str, str.length - CSUM_LEN)) {
+		console.error('bad csum:', str);
+		return;
+	}
 	if (str[0] != 'C') {
 		console.warn('unexpected message type');
 		return;
 	}
-	handle_msg_obj(JSON.parse('{' + str.slice(1) + '}'));
-}
-
-function handle_msg_obj(o)
-{
+	const o = JSON.parse('{' + str.slice(1, -CSUM_LEN) + '}');
 	const cmd = o['cmd'];
 	switch (cmd) {
 	case '_ls_cmd':
@@ -363,17 +360,6 @@ function handle_msg_obj(o)
 		handle_cmd_resp(o);
 		break;
 	}
-}
-
-function do_receive(data)
-{
-	let str = DataView2str(data);
-	console.debug('rx:', str);
-	if (str.slice(-CSUM_LEN) != str_csum(str, str.length - CSUM_LEN)) {
-		console.error('bad csum:', str);
-		return;
-	}
-	handle_msg_str(str.slice(0, -CSUM_LEN));
 }
 
 function rx_cb(data, is_binary=false)
