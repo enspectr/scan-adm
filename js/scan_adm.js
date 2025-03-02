@@ -16,7 +16,6 @@ const DataView2str   = __ble_mx_api.DataView2str;
 const str_csum       = __ble_mx_api.str_csum;
 const CSUM_LEN       = __ble_mx_api.CSUM_LEN;
 const COMPRESS_TAG   = __ble_mx_api.COMPRESS_TAG;
-const compress       = __ble_mx_api.compress;
 const decompress     = __ble_mx_api.decompress;
 
 const status = document.getElementById('status');
