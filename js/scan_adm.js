@@ -400,7 +400,7 @@ function do_receive(data)
 	}
 }
 
-function rx_cb(data, is_binary=false)
+function rx_cb(data)
 {
 	const len = data.byteLength;
 	if (data.getUint8(len - 1) != COMPRESS_TAG) {
