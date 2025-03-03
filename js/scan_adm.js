@@ -173,9 +173,6 @@ function initPage()
 
 function onBTConnected(device)
 {
-	status.textContent = tr.connected;
-	status.classList.remove('failed');
-	status.classList.add('connected');
 	bt_btn.textContent = tr.execute;
 	if (!cmd_list)
 		send_cmd('_ls_cmd');
@@ -253,6 +250,9 @@ function init_cmd_selector()
 	if (txt_res.textContent)
 		txt_res.disabled = false;
 	bt_btn.disabled = !cmd_ok();
+	status.textContent = tr.connected;
+	status.classList.remove('failed');
+	status.classList.add('connected');
 }
 
 function on_cmd_selected()
@@ -371,6 +371,8 @@ function send_cmd(cmd, args=[])
 	str += str_csum(str);
 	console.log('tx:', str);
 	bt_conn.write(str2Uint8Array(str));
+	if (cmd[0] == '_')
+		status.textContent += '.';
 }
 
 function do_receive(data)
