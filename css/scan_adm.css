@@ -54,6 +54,10 @@ textarea {
 	font-style: italic;
 }
 
+textarea, input[type=text] {
+    font-family: Arial;
+}
+
 option:nth-child(1) {
 	font-style:italic;
 }
