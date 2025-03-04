@@ -49,8 +49,6 @@ input, select, textarea {
 	background-color: white;
 	margin-bottom: .1em;
 	margin-top: .1em;
-	margin-left: .1em;
-	margin-right: .1em;
 }
 
 input[type=text]:disabled, select:disabled {
@@ -156,8 +154,15 @@ textarea:disabled {
 	box-sizing: border-box;
 }
 
+#select-log:enabled {
+	margin-left: .1em;
+}
+
 @container (max-width: 450px) {
 	.select-container select {
 		flex: 1 1 100%;
+	}
+	#select-log:enabled {
+		margin-left: 0;
 	}
 }
