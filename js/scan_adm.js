@@ -165,10 +165,8 @@ function initPage()
 		cmd_arg[i].addEventListener('keypress', on_arg_keypress);
 		cmd_arg[i].placeholder = tr.argument + ' #' + (i+1);
 	}
-	if (navigator.clipboard) {
+	if (navigator.clipboard)
 		txt_res.addEventListener('keypress', on_txt_res_keypress);
-		txt_res.placeholder = tr.results;
-	}
 }
 
 function onBTConnected(device)
@@ -253,6 +251,8 @@ function init_cmd_selector()
 	status.textContent = tr.connected;
 	status.classList.remove('failed');
 	status.classList.add('connected');
+	if (navigator.clipboard)
+		txt_res.placeholder = tr.results;
 }
 
 function on_cmd_selected()
