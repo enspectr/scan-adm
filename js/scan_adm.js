@@ -110,7 +110,10 @@ const commands = {
 	'timedatectl' : {
 		name : !lang_ru ? 'System time / date control' : 'Системное время / дата',
 		args : !lang_ru ? ['[request]', '[argument]'] : ['[запрос]', '[параметр]']
-	}
+	},
+	'update' : {
+		name : !lang_ru ? 'Update from the cloud' : 'Обновление из облака',
+	},
 };
 
 // Text translations
