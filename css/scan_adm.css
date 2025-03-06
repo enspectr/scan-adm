@@ -28,7 +28,7 @@ body {
 	font-size: .8rem;
 }
 
-#txt-res::placeholder {
+#txt-res::placeholder, #txt-res::-webkit-input-placeholder {
 	font-family: Arial;
 	font-size: 1rem;
 }
