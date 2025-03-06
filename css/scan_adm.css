@@ -23,6 +23,12 @@ body {
 	min-height: 100vh;
 }
 
+.alert-page {
+	text-align: center;
+	font-size: x-large;
+	color: darkred;
+}
+
 #txt-res {
 	font-family: monospace;
 	font-size: .8rem;

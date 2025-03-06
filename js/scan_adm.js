@@ -119,6 +119,7 @@ const commands = {
 // Text translations
 const tr =
 !lang_ru ? {
+	unsupported     : 'The Bluetooth is not supported in this browser. Please try another one.',
 	connect         : 'Connect',
 	execute         : 'Execute',
 	not_connected   : 'not connected',
@@ -133,6 +134,7 @@ const tr =
 	done            : 'done',
 	failed          : 'failed',
 } : {
+	unsupported     : 'Bluetooth не поддерживается броузером, попробуйте другой.',
 	connect         : 'Подключиться',
 	execute         : 'Выполнить',
 	not_connected   : 'не подключено',
@@ -170,7 +172,7 @@ function on_txt_res_keypress(e)
 function initPage()
 {
 	if (!navigator.bluetooth) {
-		document.body.innerHTML = '<div class="alert-page">The Bluetooth is not supported in this browser. Please try another one.</div>';
+		document.body.innerHTML = '<div class="alert-page">' + tr.unsupported + '</div>';
 		return;
 	}
 	status.textContent = tr.not_connected;
