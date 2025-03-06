@@ -4,6 +4,7 @@
 	--success-color: #4CAF50;
 	--error-color: #f44336;
 	--text-color: #333;
+	--placeholder-color: #888;
 	--bg-color: #ffffff;
 	--border-color: #ddd;
 	--btn-color: #526fa3;
@@ -28,6 +29,16 @@ body {
 
 #txt-res::placeholder {
 	font-family: Arial;
+}
+
+::placeholder, ::-webkit-input-placeholder {
+	color: var(--placeholder-color);
+	font-style: italic;
+}
+
+option:first-child {
+	color: var(--placeholder-color);
+	font-style:italic;
 }
 
 table {
@@ -129,14 +140,6 @@ textarea {
 
 #txt-res.failed {
 	color: darkred;
-}
-
-::-webkit-input-placeholder {
-	font-style: italic;
-}
-
-option:nth-child(1) {
-	font-style:italic;
 }
 
 input:disabled,
