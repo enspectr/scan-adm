@@ -105,7 +105,7 @@ const commands = {
 	},
 	'timedatectl' : {
 		name : !lang_ru ? 'System time / date control' : 'Системное время / дата',
-		args : !lang_ru ? ['[arguments]'] : ['[параметры]']
+		args : !lang_ru ? ['[request]', '[argument]'] : ['[запрос]', '[параметр]']
 	}
 };
 
