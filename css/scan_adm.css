@@ -30,6 +30,7 @@ body {
 
 #txt-res::placeholder {
 	font-family: Arial;
+	font-size: 1rem;
 }
 
 ::placeholder, ::-webkit-input-placeholder {
