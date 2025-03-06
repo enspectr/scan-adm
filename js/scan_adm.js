@@ -103,6 +103,10 @@ const commands = {
 		name : !lang_ru ? 'Set ssh password' : 'Задать пароль ssh',
 		args : !lang_ru ? ['password'] : ['пароль']
 	},
+	'timedatectl' : {
+		name : !lang_ru ? 'System time / date control' : 'Системное время / дата',
+		args : !lang_ru ? ['[arguments]'] : ['[параметры]']
+	}
 };
 
 // Text translations
