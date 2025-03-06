@@ -123,6 +123,8 @@ const tr =
 	argument        : 'argument',
 	results         : 'results area, press Enter to copy',
 	waiting_results : 'waiting results',
+	done            : 'done',
+	failed          : 'failed',
 } : {
 	connect         : 'Подключиться',
 	execute         : 'Выполнить',
@@ -135,6 +137,8 @@ const tr =
 	argument        : 'параметр',
 	results         : 'область вывода результатов, нажмите Enter, чтобы скопировать',
 	waiting_results : 'ожидаем результаты',
+	done            : 'выполнено',
+	failed          : 'ошибка',
 };
 
 // The list of commands / logs received from scanner
@@ -361,12 +365,18 @@ function handle_log_list(o)
 
 function handle_cmd_resp(o)
 {
-	txt_res.textContent = o['out'];
+	if (o['out'])
+		txt_res.textContent = o['out'];
 	txt_res.placeholder = '';
-	if (o['ret'])
+	if (o['ret']) {
 		txt_res.classList.add('failed');
-	else
+		if (!o['out'])
+			txt_res.textContent = tr.failed;
+	} else {
 		txt_res.classList.remove('failed');
+		if (!o['out'])
+			txt_res.textContent = tr.done;
+	}
 	txt_res.disabled = false;
 }
 
