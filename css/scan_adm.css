@@ -25,6 +25,7 @@ body {
 
 #txt-res {
 	font-family: monospace;
+	font-size: .8rem;
 }
 
 #txt-res::placeholder {
