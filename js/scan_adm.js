@@ -61,6 +61,10 @@ const commands = {
 		// It should be selected from the drop down list.
 		args : !lang_ru ? ['[number of lines]'] : ['[количество строк]']
 	},
+	'syslog_tail' : {
+		name : !lang_ru ? 'Show system log' : 'Показать системный лог',
+		args : !lang_ru ? ['[number of lines]'] : ['[количество строк]']
+	},
 	'copy_logs' : {
 		name : !lang_ru ? 'Copy logs' : 'Скопировать логи'
 	},
