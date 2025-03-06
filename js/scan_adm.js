@@ -134,7 +134,7 @@ const tr =
 	done            : 'done',
 	failed          : 'failed',
 } : {
-	unsupported     : 'Bluetooth не поддерживается броузером, попробуйте другой.',
+	unsupported     : 'Bluetooth не поддерживается браузером, попробуйте другой.',
 	connect         : 'Подключиться',
 	execute         : 'Выполнить',
 	not_connected   : 'не подключено',
