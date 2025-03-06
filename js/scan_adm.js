@@ -99,6 +99,10 @@ const commands = {
 	'ssh_en' : {
 		name : !lang_ru ? 'Enable ssh' : 'Разрешить доступ по ssh'
 	},
+	'chpasswd' : {
+		name : !lang_ru ? 'Set ssh password' : 'Задать пароль ssh',
+		args : !lang_ru ? ['password'] : ['пароль']
+	},
 };
 
 // Text translations
