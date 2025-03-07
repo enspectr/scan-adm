@@ -97,6 +97,10 @@ const commands = {
 	'ifconfig' : {
 		name : !lang_ru ? 'Network configuration' : 'Конфигурация сети'
 	},
+	'hostname' : {
+		name : !lang_ru ? 'Host name' : 'Имя сетевого узла',
+		args : !lang_ru ? ['[new name]'] : ['[новое имя]']
+	},
 	'ssh_dis' : {
 		name : !lang_ru ? 'Disable ssh' : 'Запретить доступ по ssh'
 	},
@@ -374,8 +378,11 @@ function handle_log_list(o)
 
 function handle_cmd_resp(o)
 {
-	if (o['out'])
+	if (o['out']) {
 		txt_res.textContent = o['out'];
+		txt_res.classList.remove('empty-response');
+	} else
+		txt_res.classList.add('empty-response');
 	txt_res.placeholder = '';
 	if (o['ret']) {
 		txt_res.classList.add('failed');
