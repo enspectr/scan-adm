@@ -31,7 +31,11 @@ body {
 
 #txt-res {
 	font-family: monospace;
-	font-size: .8rem;
+	font-size: .9rem;
+}
+
+#txt-res.empty-response {
+	font-size: 1.1rem;
 }
 
 #txt-res::placeholder, #txt-res::-webkit-input-placeholder {
