@@ -118,6 +118,17 @@ const commands = {
 	'update' : {
 		name : !lang_ru ? 'Update from the cloud' : 'Обновление из облака',
 	},
+	'set_lang' : {
+		name : !lang_ru ? 'Set UI language' : 'Поменять язык интерфейса',
+		args : ['[ru|en]']
+	},
+	'bind_iscope' : {
+		name : !lang_ru ? 'Bind intro-scope' : 'Привязать интроскоп',
+		args : !lang_ru ? ['[BLE address | leave empty to unbind]'] : ['[BLE адрес | оставить пустым чтобы отвязать]']
+	},
+	'iscope_info' : {
+		name : !lang_ru ? 'Show bound intro-scope info' : 'Информация об интроскопе',
+	},
 };
 
 // Text translations
