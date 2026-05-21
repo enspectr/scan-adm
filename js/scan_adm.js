@@ -123,7 +123,7 @@ const commands = {
 		args : ['[ru|en]']
 	},
 	'bind_iscope' : {
-		name : !lang_ru ? 'Bind intro-scope' : 'Привязать интроскоп',
+		name : !lang_ru ? 'Bind / unbind intro-scope' : 'Привязать / отвязать интроскоп',
 		args : !lang_ru ? ['[BLE address | leave empty to unbind]'] : ['[BLE адрес | оставить пустым чтобы отвязать]']
 	},
 	'iscope_info' : {
